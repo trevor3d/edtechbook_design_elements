@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arts Ebook Component Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfaf7;--surface:#fff;--ink:#1d2433;--muted:#5b6475;--line:#dde0e6;
+  --cobalt:#2f4bd8;--cobalt-t:#e8ecfd;--sun:#e8a30c;--sun-t:#fdf3d8;
+  --berry:#c2306b;--berry-t:#fbe6ee;--leaf:#1f8a5b;--leaf-t:#def4ea;
+  --head:'Bricolage Grotesque',system-ui,sans-serif;--body:'Source Serif 4',Georgia,serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141824;--surface:#1c2232;--ink:#eceef4;--muted:#a3abbd;--line:#333b50;
+  --cobalt:#8ea0ff;--cobalt-t:#222a52;--sun:#f2bd48;--sun-t:#3a3015;
+  --berry:#f08ab0;--berry-t:#43213199;--leaf:#5fd0a0;--leaf-t:#17372b}}
+:root[data-theme="dark"]{
+  --bg:#141824;--surface:#1c2232;--ink:#eceef4;--muted:#a3abbd;--line:#333b50;
+  --cobalt:#8ea0ff;--cobalt-t:#222a52;--sun:#f2bd48;--sun-t:#3a3015;
+  --berry:#f08ab0;--berry-t:#43213199;--leaf:#5fd0a0;--leaf-t:#17372b}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.125rem/1.7 var(--body)}
+h1,h2,h3,h4{font-family:var(--head);line-height:1.15;margin:0}
+a{color:var(--cobalt)}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:1rem;align-items:center;justify-content:space-between;padding:.6rem clamp(1rem,4vw,2rem);flex-wrap:wrap}
+.top b{font:700 1rem var(--head)}
+.top nav{display:flex;gap:.9rem;overflow-x:auto;font:500 .9rem var(--head)}
+.top nav a{white-space:nowrap;text-decoration:none;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.tools{display:flex;gap:.5rem}
+.btn{font:600 .85rem var(--head);border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:.4rem .8rem;border-radius:999px;cursor:pointer}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.wrap{max-width:60rem;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.hero{padding:clamp(2.5rem,7vw,5rem) 0 2rem}
+.hero h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:800;letter-spacing:-.02em;max-width:14ch}
+.hero p{max-width:38rem;color:var(--muted);margin:1.2rem 0 0}
+.swatches{display:flex;gap:.6rem;margin-top:1.6rem;flex-wrap:wrap}
+.sw{font:600 .8rem var(--head);padding:.35rem .8rem;border-radius:999px;border:1.5px solid}
+.sw.c{color:var(--cobalt);border-color:var(--cobalt);background:var(--cobalt-t)}
+.sw.s{color:var(--ink);border-color:var(--sun);background:var(--sun-t)}
+.sw.b{color:var(--berry);border-color:var(--berry);background:var(--berry-t)}
+.sw.l{color:var(--leaf);border-color:var(--leaf);background:var(--leaf-t)}
+.spec{padding:3rem 0;border-top:1px solid var(--line)}
+.spec>h2{font-size:1.9rem;font-weight:700}
+.why{color:var(--muted);max-width:40rem;margin:.5rem 0 1.5rem}
+.demo{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(1.1rem,3vw,2rem)}
+.demo>p:first-child,.demo>:first-child{margin-top:0}
+.demo>:last-child{margin-bottom:0}
+.notes{margin:1rem 0 0;font:500 .9rem/1.5 var(--head);color:var(--muted)}
+.notes code{font:600 .85em ui-monospace,Menlo,monospace;background:var(--line);padding:.1em .4em;border-radius:4px;color:var(--ink)}
+body.labels [data-c]{outline:2px dashed var(--berry);outline-offset:4px}
+body.labels [data-c]::before{content:attr(data-c);position:absolute;top:-1.5rem;left:0;background:var(--berry);color:#fff;font:700 .7rem var(--head);padding:.1rem .5rem;border-radius:4px;z-index:2}
+body.labels [data-c]{position:relative;margin-top:1.6rem}
+/* lead-in */
+.lead b{font-family:var(--head);font-weight:800;color:var(--cobalt)}
+/* callouts */
+.callout{border-left:6px solid var(--k);background:var(--kt);border-radius:0 12px 12px 0;padding:1rem 1.25rem;margin:1.2rem 0}
+.callout h4{font-size:1rem;color:var(--k);margin-bottom:.3rem}
+.callout p{margin:0;font-size:1.02rem;line-height:1.6}
+.callout.idea{--k:var(--cobalt);--kt:var(--cobalt-t)}
+.callout.try{--k:var(--leaf);--kt:var(--leaf-t)}
+.callout.watch{--k:var(--sun);--kt:var(--sun-t)}
+.callout.watch h4{color:var(--ink)}
+.callout.moment{--k:var(--berry);--kt:var(--berry-t)}
+/* pull quote */
+blockquote{margin:0;font:italic 400 1.6rem/1.4 var(--body);padding-left:1.4rem;border-left:3px solid var(--berry)}
+blockquote cite{display:block;font:600 .85rem var(--head);font-style:normal;color:var(--muted);margin-top:.6rem}
+/* accordion */
+.acc{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.acc-item+.acc-item{border-top:1px solid var(--line)}
+.acc-btn{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.25rem;cursor:pointer;font:700 1.05rem var(--head)}
+.acc-btn:hover{background:var(--cobalt-t)}
+.acc-btn:focus-visible{outline:3px solid var(--cobalt);outline-offset:-3px}
+.acc-btn svg{flex:none;transition:transform .25s}
+.acc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s}
+.acc-panel.open{grid-template-rows:1fr}
+.acc-panel>div{overflow:hidden}
+.acc-panel p{margin:0;padding:0 1.25rem 1.2rem;font-size:1.02rem;line-height:1.65}
+/* resource cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
+.rc{display:flex;flex-direction:column;gap:.5rem;border:1px solid var(--line);border-top:5px solid var(--k);border-radius:10px;padding:1.1rem;background:var(--surface)}
+.rc h3{font-size:1.1rem}
+.rc p{margin:0;font-size:.98rem;line-height:1.55;color:var(--muted);flex:1}
+.rc a{font:700 .9rem var(--head);width:fit-content}
+.rc .type{font:600 .8rem var(--head);color:var(--k)}
+.rc.v{--k:var(--cobalt)}.rc.p{--k:var(--leaf)}.rc.a{--k:var(--berry)}
+/* strategy card */
+.strat{display:grid;grid-template-columns:1fr;gap:1rem}
+.strat h3{font-size:1.5rem}
+.facts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0 0;padding:0;list-style:none}
+.facts li{font:600 .82rem var(--head);padding:.25rem .7rem;border-radius:999px;background:var(--cobalt-t);color:var(--cobalt)}
+.facts li.std{background:var(--sun-t);color:var(--ink)}
+/* tabs */
+.tablist{display:flex;gap:.4rem;border-bottom:2px solid var(--line);margin-bottom:1rem;flex-wrap:wrap}
+.tab{font:700 .95rem var(--head);background:none;border:0;padding:.6rem 1rem;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab[aria-selected="true"]{color:var(--cobalt);border-color:var(--cobalt)}
+.tabpanel[hidden]{display:none}
+.tabpanel p{margin:0}
+/* steps */
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:1rem}
+.steps li{counter-increment:s;display:grid;grid-template-columns:2.4rem 1fr;gap:1rem;align-items:start}
+.steps li::before{content:counter(s);font:800 1.1rem var(--head);width:2.4rem;height:2.4rem;border-radius:50%;background:var(--leaf);color:#fff;display:grid;place-items:center}
+.steps p{margin:0;padding-top:.25rem}
+/* glossary */
+.term{border-bottom:2px dotted var(--berry);cursor:help;position:relative;background:none;border-top:0;border-inline:0;font:inherit;color:inherit;padding:0}
+.tip{position:absolute;left:0;bottom:calc(100% + 8px);width:16rem;max-width:70vw;background:var(--ink);color:var(--bg);font:500 .88rem/1.45 var(--head);padding:.6rem .8rem;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:3;text-align:left}
+.term:hover .tip,.term:focus .tip{opacity:1}
+/* reflect */
+.reflect label{display:flex;gap:.7rem;align-items:flex-start;padding:.4rem 0;cursor:pointer;font-size:1.02rem}
+.reflect input{margin-top:.45rem;accent-color:var(--leaf);width:1.1rem;height:1.1rem}
+.reflect input:checked+span{text-decoration:line-through;color:var(--muted)}
+.reflect textarea{width:100%;min-height:5rem;margin-top:.8rem;font:inherit;font-size:1rem;padding:.7rem;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+/* media */
+.media{aspect-ratio:16/9;border-radius:10px;background:repeating-linear-gradient(45deg,var(--cobalt-t),var(--cobalt-t) 14px,var(--surface) 14px,var(--surface) 28px);display:grid;place-items:center;text-align:center;padding:1rem;font:600 1rem var(--head)}
+.media small{display:block;font-weight:500;color:var(--muted);margin-top:.3rem}
+figcaption{font:500 .88rem var(--head);color:var(--muted);margin-top:.5rem}
+figure{margin:0}
+/* nav */
+.pager{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.pager a{flex:1 1 14rem;border:1.5px solid var(--line);border-radius:10px;padding:.9rem 1.1rem;text-decoration:none;color:var(--ink);font:700 1rem var(--head)}
+.pager a small{display:block;font:500 .8rem var(--head);color:var(--muted)}
+.pager a:last-child{text-align:right}
+.pager a:hover{border-color:var(--cobalt)}
+.progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:40%;background:var(--leaf)}
+footer{padding:3rem 0 4rem;color:var(--muted);font:500 .9rem var(--head)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>Arts Ebook Component Guide</b>
+  <nav aria-label="Components">
+    <a href="#text">Text</a><a href="#callouts">Callouts</a><a href="#accordion">Accordion</a><a href="#cards">Cards</a>
+    <a href="#strategy">Strategy</a><a href="#tabs">Tabs</a><a href="#steps">Steps</a><a href="#more">More</a>
+  </nav>
+  <div class="tools">
+    <button class="btn" id="lbl" aria-pressed="false">Show labels</button>
+    <button class="btn" id="thm" aria-pressed="false">Dark mode</button>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <h1>Every piece of the page, in one place</h1>
+  <p>A working reference for the ebook that helps K-6 teachers and pre-service teachers bring the arts into their classrooms. Use it to walk the team through how each component looks, behaves, and when to reach for it. Turn on <b>Show labels</b> to tag every component with its class name.</p>
+  <div class="swatches" aria-label="Callout color meanings">
+    <span class="sw c">Blue: big ideas</span><span class="sw l">Green: do something</span>
+    <span class="sw s">Gold: watch out</span><span class="sw b">Berry: real classrooms</span>
+  </div>
+</section>
+
+<section class="spec" id="text">
+  <h2>Bolded lead-in</h2>
+  <p class="why">Opens a paragraph with a short phrase so skimming teachers can find the point. Keep it to two to five words.</p>
+  <div class="demo" data-c=".lead">
+    <p class="lead"><b>Start with looking.</b> Before students make anything, give them two minutes to notice what is in a painting. Ask what they see, not what they think it means.</p>
+    <p class="lead"><b>Name the move.</b> When a student blends colors or repeats a rhythm, say what they did. Naming a choice helps them make it again on purpose.</p>
+    <p class="lead"><b>Keep materials simple.</b> Torn paper, pencils, and a few clean sponges go a long way in a crowded room.</p>
+  </div>
+  <p class="notes">Use <code>&lt;b class="lead"&gt;</code> inside a paragraph. Use it on 2 to 4 paragraphs in a row, then switch back to plain text.</p>
+</section>
+
+<section class="spec" id="callouts">
+  <h2>Callout boxes</h2>
+  <p class="why">Four types, each with a color and a fixed job. The colored edge and the heading both signal the type, so color is never the only cue.</p>
+  <div class="demo">
+    <div class="callout idea" data-c=".callout.idea"><h4>Big idea</h4><p>The arts are a way of knowing, not only a reward for finishing other work. Students learn to observe, interpret, and communicate through them.</p></div>
+    <div class="callout try" data-c=".callout.try"><h4>Try it today</h4><p>Play 30 seconds of music and have students draw the energy they hear using only lines. No pictures of objects.</p></div>
+    <div class="callout watch" data-c=".callout.watch"><h4>Watch for</h4><p>Teachers who model a "right way" to draw can quietly teach students that only some of them are artists. Show examples, then invite variation.</p></div>
+    <div class="callout moment" data-c=".callout.moment"><h4>In the classroom</h4><p>Ms. Reyes's third graders retold a fraction lesson as a three-frame comic. The retell showed her exactly where each group got stuck.</p></div>
+  </div>
+  <p class="notes">Pick the type by purpose: <code>idea</code> explains, <code>try</code> invites action, <code>watch</code> warns, <code>moment</code> tells a story. Keep each under 50 words and use no more than two per screen.</p>
+
+  <div class="demo" style="margin-top:1.2rem">
+    <blockquote data-c="blockquote">Every child is an artist. The problem is how to remain an artist once we grow up.<cite>Pull quote, with attribution</cite></blockquote>
+  </div>
+  <p class="notes">Pull quotes break up long sections. Use placeholder text here and replace it with a cleared, attributed quote.</p>
+</section>
+
+<section class="spec" id="accordion">
+  <h2>Accordion headers</h2>
+  <p class="why">Hides optional depth so the main reading path stays short. Good for extensions, grade-level notes, and background research.</p>
+  <div class="demo">
+    <div class="acc" data-c=".acc">
+      <div class="acc-item"><h3><button class="acc-btn" aria-expanded="false" aria-controls="p1" id="b1">Why does this strategy work?<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 7l6 6 6-6"/></svg></button></h3>
+        <div class="acc-panel" id="p1" role="region" aria-labelledby="b1"><div><p>Making visible thinking part of the art task gives students a second way to show what they know, which helps learners who struggle with writing.</p></div></div></div>
+      <div class="acc-item"><h3><button class="acc-btn" aria-expanded="false" aria-controls="p2" id="b2">Adapt it for younger learners<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 7l6 6 6-6"/></svg></button></h3>
+        <div class="acc-panel" id="p2" role="region" aria-labelledby="b2"><div><p>For K-2, shorten the task to one material and one question. Model aloud, then let students work beside a partner.</p></div></div></div>
+      <div class="acc-item"><h3><button class="acc-btn" aria-expanded="false" aria-controls="p3" id="b3">Materials on a tight budget<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 7l6 6 6-6"/></svg></button></h3>
+        <div class="acc-panel" id="p3" role="region" aria-labelledby="b3"><div><p>Cardboard, scrap paper, found objects, and shadows all work. Ask families to donate clean recyclables.</p></div></div></div>
+    </div>
+  </div>
+  <p class="notes">Several panels can be open at once. Write headers as questions or short action phrases. Never hide required instructions inside an accordion.</p>
+</section>
+
+<section class="spec" id="cards">
+  <h2>Resource cards</h2>
+  <p class="why">Points to something outside the chapter. A colored top edge and a type label say what kind of resource it is before anyone clicks.</p>
+  <div class="demo">
+    <div class="cards" data-c=".cards">
+      <article class="rc v"><span class="type">Video, 6 min</span><h3>Reading a painting together</h3><p>A teacher guides second graders through a slow look at one image.</p><a href="#cards">Watch the video</a></article>
+      <article class="rc p"><span class="type">Printable, 2 pages</span><h3>Studio habits poster</h3><p>A classroom poster that names five habits of working artists.</p><a href="#cards">Download the PDF</a></article>
+      <article class="rc a"><span class="type">Article</span><h3>Arts and early literacy</h3><p>A short research summary for pre-service teachers.</p><a href="#cards">Read the article</a></article>
+    </div>
+  </div>
+  <p class="notes">Link text names the action, never "click here". Keep descriptions to one sentence. Show 2 to 4 cards per row.</p>
+</section>
+
+<section class="spec" id="strategy">
+  <h2>Strategy card</h2>
+  <p class="why">The anchor of each chapter. Summarizes a single teaching strategy with the facts a teacher needs to decide if it fits their day.</p>
+  <div class="demo">
+    <div class="strat" data-c=".strat">
+      <div>
+        <h3>See, Think, Wonder</h3>
+        <ul class="facts" aria-label="Strategy details">
+          <li>Grades K-6</li><li>15 minutes</li><li>No special materials</li><li class="std">Visual arts</li><li class="std">Responding</li>
+        </ul>
+      </div>
+      <p>Students look closely at an artwork, then share what they see, what they think is happening, and what they wonder. It builds observation and evidence-based talk.</p>
+    </div>
+  </div>
+  <p class="notes">Blue chips describe logistics. Gold chips tie to arts areas or standards. Keep chips to six or fewer.</p>
+</section>
+
+<section class="spec" id="tabs">
+  <h2>Tabs for grade bands</h2>
+  <p class="why">Shows the same strategy at different levels without making teachers scroll past content that does not apply to them. Arrow keys move between tabs.</p>
+  <div class="demo" data-c=".tabs">
+    <div class="tablist" role="tablist" aria-label="Grade band">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="t1" id="tt1">K-2</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="t2" id="tt2" tabindex="-1">3-4</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="t3" id="tt3" tabindex="-1">5-6</button>
+    </div>
+    <div class="tabpanel" role="tabpanel" id="t1" aria-labelledby="tt1"><p>Point to one part of the artwork at a time. Students answer aloud with sentence starters like "I see..."</p></div>
+    <div class="tabpanel" role="tabpanel" id="t2" aria-labelledby="tt2" hidden><p>Students record three observations on sticky notes and sort them into "what I see" and "what I think."</p></div>
+    <div class="tabpanel" role="tabpanel" id="t3" aria-labelledby="tt3" hidden><p>Students write a claim about the artwork and support it with two details they can point to.</p></div>
+  </div>
+  <p class="notes">Use for grade bands or subject areas only. Content in each tab should be about the same length.</p>
+</section>
+
+<section class="spec" id="steps">
+  <h2>Numbered steps</h2>
+  <p class="why">Reserved for true sequences, like a lesson routine. Numbers appear only when order matters.</p>
+  <div class="demo">
+    <ol class="steps" data-c=".steps">
+      <li><p><b>Show the image.</b> Give students a full minute of silent looking.</p></li>
+      <li><p><b>Ask what they see.</b> Collect answers without judging them.</p></li>
+      <li><p><b>Ask what they think.</b> Request evidence from the image for each idea.</p></li>
+      <li><p><b>Ask what they wonder.</b> Record questions on the board to revisit.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="spec" id="more">
+  <h2>More components</h2>
+  <p class="why">Smaller pieces that support the main set.</p>
+
+  <h3 style="margin:1rem 0 .6rem">Glossary term</h3>
+  <div class="demo">
+    <p data-c=".term">Students practice <button class="term" type="button">scaffolding<span class="tip" role="tooltip">Temporary support that helps a learner do a task they could not yet do alone.</span></button> by starting with a shared example before working on their own.</p>
+  </div>
+  <p class="notes">Hover or focus a term to see the definition. Use only for the first appearance in a chapter.</p>
+
+  <h3 style="margin:1.8rem 0 .6rem">Reflection checklist</h3>
+  <div class="demo reflect" data-c=".reflect">
+    <label><input type="checkbox"><span>I tried the strategy with a small group first.</span></label>
+    <label><input type="checkbox"><span>I noticed one student who surprised me.</span></label>
+    <label><input type="checkbox"><span>I changed one step to fit my room.</span></label>
+    <textarea aria-label="Reflection notes" placeholder="What would you do differently next time?"></textarea>
+  </div>
+  <p class="notes">For pre-service teachers' journals and PD groups. Checks live on the page only.</p>
+
+  <h3 style="margin:1.8rem 0 .6rem">Media block</h3>
+  <div class="demo">
+    <figure data-c=".media"><div class="media" role="img" aria-label="Video placeholder"><span>Video or image goes here<small>16:9, with a caption and transcript link</small></span></div><figcaption>Fourth graders compare two self-portraits. Transcript available.</figcaption></figure>
+  </div>
+
+  <h3 style="margin:1.8rem 0 .6rem">Chapter progress and pager</h3>
+  <div class="demo">
+    <div class="progress" data-c=".progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Chapter progress"><i></i></div>
+    <nav class="pager" aria-label="Chapter navigation" data-c=".pager" style="margin-top:2rem">
+      <a href="#more"><small>Previous</small>Why the arts matter</a>
+      <a href="#more"><small>Next</small>Integrating music and math</a>
+    </nav>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">Placeholder copy throughout. Replace with approved content before launch.</footer>
+
+<script>
+const root=document.documentElement,lb=document.getElementById('lbl'),th=document.getElementById('thm');
+lb.onclick=()=>{const on=document.body.classList.toggle('labels');lb.setAttribute('aria-pressed',on);lb.textContent=on?'Hide labels':'Show labels'};
+th.onclick=()=>{const dark=th.getAttribute('aria-pressed')!=='true';root.dataset.theme=dark?'dark':'light';th.setAttribute('aria-pressed',dark);th.textContent=dark?'Light mode':'Dark mode'};
+document.querySelectorAll('.acc-btn').forEach(b=>b.onclick=()=>{
+  const open=b.getAttribute('aria-expanded')==='true';
+  b.setAttribute('aria-expanded',!open);
+  document.getElementById(b.getAttribute('aria-controls')).classList.toggle('open',!open)});
+const tabs=[...document.querySelectorAll('.tab')];
+function pick(t){tabs.forEach(x=>{const s=x===t;x.setAttribute('aria-selected',s);x.tabIndex=s?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!s});t.focus()}
+tabs.forEach((t,i)=>{t.onclick=()=>pick(t);t.onkeydown=e=>{
+  if(e.key==='ArrowRight')pick(tabs[(i+1)%tabs.length]);
+  if(e.key==='ArrowLeft')pick(tabs[(i-1+tabs.length)%tabs.length])}});
+</script>
+</body>
+</html>
